@@ -1,10 +1,11 @@
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Select DOM elements
+    // 1. Select DOM elements
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
-    // Function to add a new task
+    // 2. Create the addTask function
     function addTask() {
         // Get and trim the task text
         const taskText = taskInput.value.trim();
@@ -18,9 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create new list item
         const listItem = document.createElement('li');
         
-        // Create task text span
-        const taskSpan = document.createElement('span');
-        taskSpan.textContent = taskText;
+        // Set text content (will be modified in next steps)
+        listItem.textContent = taskText;
         
         // Create remove button
         const removeButton = document.createElement('button');
@@ -28,12 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
         removeButton.className = "remove-btn";
         
         // Add click event to remove button
-        removeButton.onclick = function() {
+        removeButton.addEventListener('click', function() {
             taskList.removeChild(listItem);
-        };
+        });
         
-        // Append elements to list item
-        listItem.appendChild(taskSpan);
+        // Append remove button to list item
         listItem.appendChild(removeButton);
         
         // Add list item to task list
@@ -43,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
         taskInput.value = "";
     }
 
+    // 3. Attach event listeners
+    
     // Add task when button is clicked
     addButton.addEventListener('click', addTask);
 
