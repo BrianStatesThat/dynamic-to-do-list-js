@@ -4,10 +4,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
+    // Function to load tasks from Local Storage
+    function loadTasks() {
+        const storedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        storedTasks.forEach(taskText => addTask(taskText, false)); // Don't save again
+    }
+
+    // Function to save tasks array to Local Storage
+    function saveTasks() {
+        const tasks = [];
+        // Collect all task texts from the DOM
+        taskList.querySelectorAll('li').forEach(li => {
+            // Remove button is lastChild, so get text only
+            tasks.push(li.firstChild.textContent.trim());
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
     // Function to add a new task
-    function addTask() {
-        // Get and trim the task text
-        const taskText = taskInput.value.trim();
+    function addTask(taskText, save = true) {
+        // If called from button/input, get and trim the task text
+        if (typeof taskText !== 'string') {
+            taskText = taskInput.value.trim();
+        }
         
         // Check if input is empty
         if (taskText === "") {
@@ -27,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add click event to remove button
         removeButton.onclick = function() {
             taskList.removeChild(listItem);
+            saveTasks(); // Update Local Storage after removal
         };
         
         // Append remove button to list item
@@ -35,8 +55,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add list item to task list
         taskList.appendChild(listItem);
         
-        // Clear input field
-        taskInput.value = "";
+        // Clear input field if added via input
+        if (typeof taskText !== 'string') {
+            taskInput.value = "";
+        }
+
+        // Save to Local Storage if needed
+        if (save) {
+            saveTasks();
+        }
     }
 
     // Add task when button is clicked
@@ -48,4 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addTask();
         }
     });
+
+    // Load tasks from Local Storage on page load
+    loadTasks();
 });
